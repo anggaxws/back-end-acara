@@ -1,8 +1,8 @@
 import express from "express";
-import dummyController from '../controllers/dummmy.controllers';
-const router = express.Router();
+import authController from "../controllers/auth.controller";
+const router = express.Router(); // Disini kita pakai fitur Router dari express
 
-router.get('/dummy', dummyController.dummy);
-
+router.post("/register", authController.register);
+router.post("/login", authController.login);
 
 export default router;
