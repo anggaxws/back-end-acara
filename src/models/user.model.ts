@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { encrypt } from "../utils/encryption";
 
+
+// Interface ini mendefinisikan struktur objek User
 export interface User {
 
    fullName: string;
@@ -21,9 +23,9 @@ export interface User {
 
 }
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema; // Alias untuk mempermudah penulisan Mongoose Schema.
 
-
+// Mendefinisikan Schema Mongoose, yang memetakan interface User ke koleksi MongoDB.
 const UserSchema = new Schema<User>({
 
    fullName: {
@@ -82,29 +84,31 @@ const UserSchema = new Schema<User>({
    },
 }, {
 
-   timestamps: true,
+   timestamps: true, // Opsi untuk menambahkan field 'createdAt' dan 'updatedAt' secara otomatis.
 
 });
 
-// Middleware = memberikan jeda proses sebelum tersimpan untuk melakukan enkripsi 
+// Middleware Mongoose: Dijalankan SEBELUM (pre) dokumen disimpan (save) untuk melakukan enkripsi 
 UserSchema.pre("save", function (next) {
 
    const user = this;
    user.password = encrypt(user.password);
-   next();
+   next(); // Wajib dipanggil untuk melanjutkan proses penyimpanan.
 
 });
 
+
+// Delete the password when being requested
 UserSchema.methods.toJSON = function () {
 
-   const user = this.toObject();
+   const user = this.toObject(); // Mengkonversi dokumen Mongoose menjadi objek JavaScript biasa.
 
-   delete user.password;
+   delete user.password; // Menghapus properti password dari objek yang akan dikirim ke klien.
 
-   return user;
+   return user; // Mengembalikan objek tanpa password.
 }
 
-// Jembatan antara dari kontroller untuk menyimpan data user ke database
+// Membuat Model Mongoose (objek yang digunakan controller untuk berinteraksi dengan koleksi 'User').
 const UserModel = mongoose.model("User", UserSchema);
 
 export default UserModel;
