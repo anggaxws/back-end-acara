@@ -20,6 +20,16 @@ async function init() {
 
       const PORT = 3000;
 
+      app.get("/", (req, res) => {
+
+         res.status(200).json({
+
+            message: "Server is running.",
+            data: null,
+
+         });
+      });
+
       app.use('/api/auth', router); // Baris ini menghubungkan semua endpoint yang didefinisikan dalam file router
 
       app.listen(PORT, () => {
