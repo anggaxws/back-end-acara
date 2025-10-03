@@ -103,6 +103,16 @@ export default {
    },
 
    async login(req: Request, res: Response) {
+      /*  #swagger.requestBody = {
+            required: true,
+            content: {
+               "application/json": {
+                  schema: { $ref: "#/components/schemas/LoginRequest" }
+               }
+            }
+         }
+      */
+
 
       const {
 
@@ -186,6 +196,11 @@ export default {
 
    async me(req: IReqUser, res: Response) {
 
+      /**
+       #swagger.security = [{
+        "bearerAuth": []
+       }]
+       */
       try {
          const user = req.user;
 

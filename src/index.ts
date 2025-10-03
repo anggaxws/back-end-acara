@@ -4,6 +4,9 @@ import express from "express"; // Konfigurasi servernya
 import bodyParser from "body-parser";
 import router from "./routes/api";
 import db from "./utils/database";
+import docs from "./docs/route";
+import cors from "cors";
+import { ensureDefaultUser } from "./utils/seed";
 
 // Fungsi utama asinkron untuk inisialisasi server.
 async function init() {
@@ -14,7 +17,11 @@ async function init() {
 
       console.log("Database status: ", result);
 
+      await ensureDefaultUser();
+
       const app = express(); // Membuat instance aplikasi Express.
+
+      app.use(cors());
 
       app.use(bodyParser.json()); // Middleware: Mengizinkan Express membaca dan mengubah body permintaan JSON ke req.body.
 
@@ -30,7 +37,10 @@ async function init() {
          });
       });
 
-      app.use('/api/auth', router); // Baris ini menghubungkan semua endpoint yang didefinisikan dalam file router
+      app.use('/api/', router); // Baris ini menghubungkan semua endpoint yang didefinisikan dalam file router
+      docs(app);
+
+
 
       app.listen(PORT, () => {
          console.log(`Server is running on http://localhost:${PORT}`);
@@ -43,7 +53,6 @@ async function init() {
 
 // Memanggil fungsi inisialisasi untuk menjalankan seluruh aplikasi.
 init();
-
 
 
 
