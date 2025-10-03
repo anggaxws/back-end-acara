@@ -11,7 +11,7 @@
       "description": "Local Server"
     },
     {
-      "url": "https://back-end-acara-nine-murex.vercel.app/api",
+      "url": "https://back-end-events.vercel.app/api",
       "description": "Deploy Server"
     }
   ],
