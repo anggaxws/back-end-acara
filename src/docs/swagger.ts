@@ -32,6 +32,18 @@ const doc = {
             identifier: "anggaxws",
             password: "1234",
          },
+
+         RegisterRequest: {
+            fullName: "Angga",
+            userName: "anggaxws",
+            email: "anggawibisono@zohomail.eu",
+            password: "1234",
+            confirmPassword: "1234",
+         },
+
+         ActivationRequest: {
+            code: "abcdef",
+         }
       },
    },
 };

@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { encrypt } from "../utils/encryption";
+import {renderMailHtml, sendEmail} from "../utils/mail/mail";
+import { CLIENT_HOST, EMAIL_SMTP_USER } from "../utils/env";
 
 
 // Interface ini mendefinisikan struktur objek User
@@ -21,6 +23,8 @@ export interface User {
 
    activationCode: string;
 
+   createdAt?: string;
+
 }
 
 const Schema = mongoose.Schema; // Alias untuk mempermudah penulisan Mongoose Schema.
@@ -39,6 +43,7 @@ const UserSchema = new Schema<User>({
 
       type: Schema.Types.String,
       required: true,
+      unique: true,
 
    },
 
@@ -46,6 +51,7 @@ const UserSchema = new Schema<User>({
 
       type: Schema.Types.String,
       required: true,
+      unique: true,
 
    },
 
@@ -93,9 +99,47 @@ UserSchema.pre("save", function (next) {
 
    const user = this;
    user.password = encrypt(user.password);
+   user.activationCode = encrypt(user.id);
+
    next(); // Wajib dipanggil untuk melanjutkan proses penyimpanan.
 
 });
+
+UserSchema.post("save", async function (doc, next) {
+   try {
+      const user = doc;
+
+      console.log("Send email to: ", user);
+
+      const contentMail = await renderMailHtml("registration-success.ejs", {
+
+         username: user.username,
+         fullName: user.fullName,
+         email: user.email,
+         createdAt: user.createdAt,
+         activationLink: `${CLIENT_HOST}/auth/activation?code=${user.activationCode}`,
+
+      });
+
+      await sendEmail({
+
+      from: EMAIL_SMTP_USER,
+      to: user.email,
+      subject: "Your Account Activation",
+      html: contentMail,
+
+      });
+   } catch (error) {
+      console.log(error);
+   } finally {
+      next();
+   }
+   
+});
+
+
+
+
 
 
 // Delete the password when being requested
@@ -106,7 +150,9 @@ UserSchema.methods.toJSON = function () {
    delete user.password; // Menghapus properti password dari objek yang akan dikirim ke klien.
 
    return user; // Mengembalikan objek tanpa password.
-}
+};
+
+
 
 // Membuat Model Mongoose (objek yang digunakan controller untuk berinteraksi dengan koleksi 'User').
 const UserModel = mongoose.model("User", UserSchema);

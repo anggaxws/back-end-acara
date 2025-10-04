@@ -11,13 +11,16 @@
       "description": "Local Server"
     },
     {
-      "url": "https://back-end-events.vercel.app/api",
+      "url": "https://back-end-acara-nine-murex.vercel.app/api",
       "description": "Deploy Server"
     }
   ],
   "paths": {
     "/register": {
       "post": {
+        "tags": [
+          "auth"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -57,6 +60,9 @@
     },
     "/login": {
       "post": {
+        "tags": [
+          "auth"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -83,6 +89,9 @@
     },
     "/me": {
       "get": {
+        "tags": [
+          "auth"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -100,6 +109,37 @@
             "bearerAuth": []
           }
         ]
+      }
+    },
+    "/auth/activation": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivationRequest"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivationRequest"
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -122,6 +162,49 @@
             "type": "string",
             "example": "1234"
           }
+        },
+        "xml": {
+          "name": "LoginRequest"
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "example": "Angga"
+          },
+          "userName": {
+            "type": "string",
+            "example": "anggaxws"
+          },
+          "email": {
+            "type": "string",
+            "example": "anggawibisono@zohomail.eu"
+          },
+          "password": {
+            "type": "string",
+            "example": "1234"
+          },
+          "confirmPassword": {
+            "type": "string",
+            "example": "1234"
+          }
+        },
+        "xml": {
+          "name": "RegisterRequest"
+        }
+      },
+      "ActivationRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "abcdef"
+          }
+        },
+        "xml": {
+          "name": "ActivationRequest"
         }
       }
     }
